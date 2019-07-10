@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Weather Segment
+Bundle-SymbolicName: com.liferay.demo.segments.weather
+Bundle-Version: 1.0.0
+Web-ContextPath: /rule-weather
+
+Import-Package: !org.apache.avalon.framework.logger,!org.apache.log,*
