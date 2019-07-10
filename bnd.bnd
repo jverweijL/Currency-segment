@@ -1,6 +1,6 @@
-Bundle-Name: Liferay Weather Segment
-Bundle-SymbolicName: com.liferay.demo.segments.weather
+Bundle-Name: Liferay Currency Segment
+Bundle-SymbolicName: com.liferay.demo.segments.currency
 Bundle-Version: 1.0.0
-Web-ContextPath: /rule-weather
+Web-ContextPath: /rule-currency
 
 Import-Package: !org.apache.avalon.framework.logger,!org.apache.log,*
