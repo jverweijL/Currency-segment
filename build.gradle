@@ -13,9 +13,9 @@ dependencies {
 	compileInclude group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.10'
 
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-	compileInclude group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.7'
+	//compileInclude group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.7'
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-	compileInclude group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.7'
+	//compileInclude group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.7'
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
-	compileInclude group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.7'
+	//compileInclude group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.7'
 }

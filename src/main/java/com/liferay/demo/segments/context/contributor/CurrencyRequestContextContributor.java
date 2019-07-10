@@ -14,15 +14,13 @@
 
 package com.liferay.demo.segments.context.contributor;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.segments.context.Context;
 import com.liferay.segments.context.contributor.RequestContextContributor;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -55,40 +53,36 @@ public class CurrencyRequestContextContributor
 	public void contribute(
 		Context context, HttpServletRequest httpServletRequest) {
 
-		String currency = "USD";
+		HttpSession session = httpServletRequest.getSession();
 
-		if (context.get(KEY) == null) {
+		if (session.getAttribute(KEY) == null) {
 
 			try {
-				ObjectMapper mapper = new ObjectMapper();
-
 				String ipAddress = getIpAddress(httpServletRequest);
 				_log.debug(String.format("Using ip %s", ipAddress));
 
 				HttpUriRequest request = RequestBuilder
-						.get("https://ipapi.co/" + ipAddress + "/json")
+						.get("https://ipapi.co/" + ipAddress + "/currency")
 						.build();
 
-				JsonNode jsonResult = mapper.readTree(getRequest(request));
+				String currency = getRequest(request);
+				_log.debug("Currency received: " + currency);
 
-				_log.debug(jsonResult.toString());
+				if (currency == null || currency.isEmpty()) {
+					currency = "USD";
+				}
 
-				currency = jsonResult.get("currency").asText("USD");
+				_log.debug(String.format("Using currency %s", currency));
+				context.put(KEY, currency);
+				session.setAttribute(KEY,currency);
 
-
-			} catch (IOException e) {
-				_log.debug(e.getMessage());
-				_log.debug(e.getStackTrace());
 			} catch (Exception e) {
 				_log.debug(e.getMessage());
 				_log.debug("Global exception: " + e.toString());
 			}
-
-			_log.debug(String.format("Using currency %s", currency));
-			context.put(KEY, currency);
 		}
-
 	}
+
 
 	private String getRequest(HttpUriRequest request) {
 		HttpClient client = HttpClientBuilder.create().build();
