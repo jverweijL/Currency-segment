@@ -14,6 +14,9 @@
 
 package com.liferay.demo.segments.context.contributor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.segments.context.Context;
@@ -61,20 +64,23 @@ public class CurrencyRequestContextContributor
 				String ipAddress = getIpAddress(httpServletRequest);
 				_log.debug(String.format("Using ip %s", ipAddress));
 
-				HttpUriRequest request = RequestBuilder
-						.get("https://ipapi.co/" + ipAddress + "/currency")
-						.build();
+				if (!ipAddress.startsWith("127.") && !ipAddress.startsWith("192.") && !ipAddress.startsWith("10.")) {
 
-				String currency = getRequest(request);
-				_log.debug("Currency received: " + currency);
 
-				if (currency == null || currency.isEmpty()) {
-					currency = "USD";
+					HttpUriRequest request = RequestBuilder
+							//.get("https://ipapi.co/" + ipAddress + "/json")
+							.get(String.format("https://api.ipgeolocation.io/ipgeo?apiKey=279d562f2dd347978b81ea324699cf9e&ip=%s",ipAddress))
+							.build();
+
+					ObjectMapper mapper = new ObjectMapper();
+					JsonNode jsonResult = mapper.readTree(getRequest(request));
+
+					String currency = jsonResult.get("currency").get("code").asText("USD");
+
+					_log.debug(String.format("Using currency %s", currency));
+					session.setAttribute(KEY, currency);
+					context.put(KEY, currency);
 				}
-
-				_log.debug(String.format("Using currency %s", currency));
-				context.put(KEY, currency);
-				session.setAttribute(KEY,currency);
 
 			} catch (Exception e) {
 				_log.debug(e.getMessage());
