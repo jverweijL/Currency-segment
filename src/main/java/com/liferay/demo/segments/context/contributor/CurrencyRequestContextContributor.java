@@ -57,31 +57,36 @@ public class CurrencyRequestContextContributor
 
 		String currency = "USD";
 
-		try {
-			ObjectMapper mapper = new ObjectMapper();
+		if (context.get(KEY) == null) {
 
-			String ipAddress = getIpAddress(httpServletRequest);
-			_log.debug(String.format("Using ip %s", ipAddress));
+			try {
+				ObjectMapper mapper = new ObjectMapper();
 
-			HttpUriRequest request = RequestBuilder
-					.get("https://ipapi.co/" + ipAddress + "/json")
-					.build();
+				String ipAddress = getIpAddress(httpServletRequest);
+				_log.debug(String.format("Using ip %s", ipAddress));
 
-			JsonNode jsonResult = mapper.readTree(getRequest(request));
+				HttpUriRequest request = RequestBuilder
+						.get("https://ipapi.co/" + ipAddress + "/json")
+						.build();
 
-			currency = jsonResult.get("currency").asText("USD");
+				JsonNode jsonResult = mapper.readTree(getRequest(request));
+
+				_log.debug(jsonResult.toString());
+
+				currency = jsonResult.get("currency").asText("USD");
 
 
-		} catch (IOException e) {
-			_log.debug(e.getMessage());
-			_log.debug(e.getStackTrace());
-		} catch (Exception e) {
-			_log.debug(e.getMessage());
-			_log.debug("Global exception: " + e.toString());
+			} catch (IOException e) {
+				_log.debug(e.getMessage());
+				_log.debug(e.getStackTrace());
+			} catch (Exception e) {
+				_log.debug(e.getMessage());
+				_log.debug("Global exception: " + e.toString());
+			}
+
+			_log.debug(String.format("Using currency %s", currency));
+			context.put(KEY, currency);
 		}
-
-		_log.debug(String.format("Using currency %s", currency));
-		context.put(KEY, currency);
 
 	}
 
