@@ -36,83 +36,53 @@ import org.osgi.service.component.annotations.Component;
 import java.io.IOException;
 
 /**
- * @author Kris / Jan
+ * @author Jan
  */
 @Component(
 	immediate = true,
 	property = {
-		"request.context.contributor.key=" + WeatherRequestContextContributor.KEY,
+		"request.context.contributor.key=" + CurrencyRequestContextContributor.KEY,
 		"request.context.contributor.type=String"
 	},
 	service = RequestContextContributor.class
 )
-public class WeatherRequestContextContributor
+public class CurrencyRequestContextContributor
 	implements RequestContextContributor {
 
-	public static final String KEY = "weather";
+	public static final String KEY = "currency";
 
 	@Override
 	public void contribute(
 		Context context, HttpServletRequest httpServletRequest) {
 
-		String actualWeather = "unknown";
+		String currency = "USD";
 
-/*
-		if(context.get(KEY) == null)
-		{
-*/
-			try {
-				ObjectMapper mapper = new ObjectMapper();
+		try {
+			ObjectMapper mapper = new ObjectMapper();
 
-				String ipAddress = getIpAddress(httpServletRequest);
-				_log.debug(String.format("Using ip %s", ipAddress));
+			String ipAddress = getIpAddress(httpServletRequest);
+			_log.debug(String.format("Using ip %s", ipAddress));
 
-				HttpUriRequest request = RequestBuilder
-						.get("https://ipapi.co/" + ipAddress + "/json")
-						.build();
+			HttpUriRequest request = RequestBuilder
+					.get("https://ipapi.co/" + ipAddress + "/json")
+					.build();
 
-				JsonNode jsonResult = mapper.readTree(getRequest(request));
+			JsonNode jsonResult = mapper.readTree(getRequest(request));
 
-				String latitude = jsonResult.get("latitude").asText();
-				String longitude = jsonResult.get("longitude").asText();
+			currency = jsonResult.get("currency").asText("USD");
 
-				_log.debug(String.format("Looking up weather at lat %s and lon %s", latitude, longitude));
 
-				String apiKey = PortalUtil.getPortalProperties().getProperty("segment.openweathermap.apikey");
+		} catch (IOException e) {
+			_log.debug(e.getMessage());
+			_log.debug(e.getStackTrace());
+		} catch (Exception e) {
+			_log.debug(e.getMessage());
+			_log.debug("Global exception: " + e.toString());
+		}
 
-				request = RequestBuilder
-						.get("http://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&APPID=" + apiKey)
-						.build();
+		_log.debug(String.format("Using currency %s", currency));
+		context.put(KEY, currency);
 
-				jsonResult = mapper.readTree(getRequest(request));
-
-				int weatherCode = jsonResult.withArray("weather").get(0).get("id").asInt(0);
-
-				if ((weatherCode >= 200 && weatherCode < 600) || weatherCode == 900 || weatherCode == 901 || weatherCode == 902) {
-					actualWeather = "rainy";
-				} else if (weatherCode >= 600 && weatherCode <= 622) {
-					actualWeather = "snowy";
-				} else if (weatherCode == 800 || weatherCode == 801) {
-					actualWeather = "sunny";
-				} else if (weatherCode == 802 || weatherCode == 803 || weatherCode == 804) {
-					actualWeather = "cloudy";
-				} else if (weatherCode == 905 || weatherCode >= 956) {
-					actualWeather = "windy";
-				} else if (weatherCode == 701 || weatherCode == 721 || weatherCode == 771 || weatherCode == 741) {
-					actualWeather = "misty";
-				}
-
-			} catch (IOException e) {
-				_log.debug(e.getMessage());
-				_log.debug(e.getStackTrace());
-			} catch (Exception e) {
-				_log.debug(e.getMessage());
-				_log.debug("Global exception: " + e.toString());
-			}
-
-			_log.debug(String.format("The weather rule is running and the weather is %s", actualWeather));
-			context.put(KEY, actualWeather);
-		//}
 	}
 
 	private String getRequest(HttpUriRequest request) {
@@ -145,5 +115,5 @@ public class WeatherRequestContextContributor
 		return ipAddress.replaceFirst(",.*","").trim();
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(WeatherRequestContextContributor.class);
+	private static final Log _log = LogFactoryUtil.getLog(CurrencyRequestContextContributor.class);
 }

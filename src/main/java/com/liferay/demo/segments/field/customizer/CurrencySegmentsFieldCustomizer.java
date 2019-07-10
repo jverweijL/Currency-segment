@@ -32,12 +32,12 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"segments.field.customizer.entity.name=Context",
-		"segments.field.customizer.key=" + WeatherSegmentsFieldCustomizer.KEY,
+		"segments.field.customizer.key=" + CurrencySegmentsFieldCustomizer.KEY,
 		"segments.field.customizer.priority:Integer=50"
 	},
 	service = SegmentsFieldCustomizer.class
 )
-public class WeatherSegmentsFieldCustomizer implements SegmentsFieldCustomizer {
+public class CurrencySegmentsFieldCustomizer implements SegmentsFieldCustomizer {
 
 	public static final String KEY = "weather";
 
