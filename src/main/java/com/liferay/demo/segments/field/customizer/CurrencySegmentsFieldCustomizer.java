@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Component;
 )
 public class CurrencySegmentsFieldCustomizer implements SegmentsFieldCustomizer {
 
-	public static final String KEY = "weather";
+	public static final String KEY = "currency";
 
 	@Override
 	public List<String> getFieldNames() {
@@ -56,10 +56,10 @@ public class CurrencySegmentsFieldCustomizer implements SegmentsFieldCustomizer 
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			"content.Language", locale, getClass());
 
-		return LanguageUtil.get(resourceBundle, "weather-field-label");
+		return LanguageUtil.get(resourceBundle, "currency-field-label");
 	}
 
 	private static final List<String> _fieldNames = ListUtil.fromArray(
-		new String[] {"weather"});
+		new String[] {"currency"});
 
 }
