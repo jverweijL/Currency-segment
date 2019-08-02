@@ -61,7 +61,7 @@ public class CurrencyRequestContextContributor
 
 		HttpSession session = httpServletRequest.getSession();
 
-		if (session.getAttribute(KEY) == null) {
+		if (context.get(KEY) == null) {
 
 			try {
 				String ipAddress = getIpAddress(httpServletRequest);
@@ -89,7 +89,6 @@ public class CurrencyRequestContextContributor
 			}
 		}
 	}
-
 
 	private String getRequest(HttpUriRequest request) {
 		HttpClient client = HttpClientBuilder.create().build();
