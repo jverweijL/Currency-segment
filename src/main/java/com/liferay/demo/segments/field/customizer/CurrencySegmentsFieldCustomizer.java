@@ -17,8 +17,10 @@ package com.liferay.demo.segments.field.customizer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.segments.field.Field;
 import com.liferay.segments.field.customizer.SegmentsFieldCustomizer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -40,6 +42,10 @@ import org.osgi.service.component.annotations.Component;
 public class CurrencySegmentsFieldCustomizer implements SegmentsFieldCustomizer {
 
 	public static final String KEY = "currency";
+	public static final List<Field.Option> currencies = Arrays.asList(
+			new Field.Option("Euro","EUR"),
+			new Field.Option("US Dollar","USD"),
+			new Field.Option("British Pound","GBP"));
 
 	@Override
 	public List<String> getFieldNames() {
@@ -57,6 +63,11 @@ public class CurrencySegmentsFieldCustomizer implements SegmentsFieldCustomizer 
 			"content.Language", locale, getClass());
 
 		return LanguageUtil.get(resourceBundle, "currency-field-label");
+	}
+
+	@Override
+	public List<Field.Option> getOptions(Locale locale) {
+		return currencies;
 	}
 
 	private static final List<String> _fieldNames = ListUtil.fromArray(

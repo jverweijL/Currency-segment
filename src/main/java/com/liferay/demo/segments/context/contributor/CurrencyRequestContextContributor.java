@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.segments.context.Context;
 import com.liferay.segments.context.contributor.RequestContextContributor;
 
@@ -51,6 +52,8 @@ public class CurrencyRequestContextContributor
 	implements RequestContextContributor {
 
 	public static final String KEY = "currency";
+	String myip = PortalUtil.getPortalProperties().getProperty("segment.currency.myip",null);
+	String apiKey = PortalUtil.getPortalProperties().getProperty("segment.ipgeolocation.apikey",null);
 
 	@Override
 	public void contribute(
@@ -65,11 +68,9 @@ public class CurrencyRequestContextContributor
 				_log.debug(String.format("Using ip %s", ipAddress));
 
 				if (!ipAddress.startsWith("127.") && !ipAddress.startsWith("192.") && !ipAddress.startsWith("10.")) {
-
-
 					HttpUriRequest request = RequestBuilder
 							//.get("https://ipapi.co/" + ipAddress + "/json")
-							.get(String.format("https://api.ipgeolocation.io/ipgeo?apiKey=279d562f2dd347978b81ea324699cf9e&ip=%s",ipAddress))
+							.get(String.format("https://api.ipgeolocation.io/ipgeo?apiKey=%s&ip=%s",apiKey,ipAddress))
 							.build();
 
 					ObjectMapper mapper = new ObjectMapper();
@@ -108,6 +109,10 @@ public class CurrencyRequestContextContributor
 	}
 
 	private String getIpAddress (HttpServletRequest request) {
+
+		if (myip != null) {
+			return myip;
+		}
 
 		String ipAddress = request.getHeader("X-Real-Ip");
 		if (ipAddress == null || ipAddress.isEmpty()) {
