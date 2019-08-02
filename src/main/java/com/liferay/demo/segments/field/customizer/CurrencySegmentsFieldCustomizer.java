@@ -43,9 +43,10 @@ public class CurrencySegmentsFieldCustomizer implements SegmentsFieldCustomizer 
 
 	public static final String KEY = "currency";
 	public static final List<Field.Option> currencies = Arrays.asList(
+			new Field.Option("Arab Emirate Dirham","AED"),
+			new Field.Option("British Pound","GBP"),
 			new Field.Option("Euro","EUR"),
-			new Field.Option("US Dollar","USD"),
-			new Field.Option("British Pound","GBP"));
+			new Field.Option("US Dollar","USD"));
 
 	@Override
 	public List<String> getFieldNames() {
